@@ -134,6 +134,9 @@ endfun
 
 function! s:matchingNames(query)
   let command = s:ruby_script_path . shellescape(a:query)
+  if exists('b:bundler_lock') && !empty(b:bundler_lock)
+    let command = 'bundle exec ' . command
+  endif
   echom command
   return split(system(command), '\n')
 endfunction
@@ -191,6 +194,9 @@ endfun
 
 function! s:matchingMethods(classname)
   let command = s:ruby_script_path . '-m '. shellescape(a:classname)
+  if exists('b:bundler_lock') && !empty(b:bundler_lock)
+    let command = 'bundle exec ' . command
+  endif
   return split(system(command), '\n')
 endfunction
 
@@ -229,6 +235,9 @@ endfunction
 
 function! s:displayDoc(query)
   let bcommand = s:ruby_script_path.'-d '.shellescape(a:query)
+  if exists('b:bundler_lock') && !empty(b:bundler_lock)
+    let bcommand = 'bundle exec ' . bcommand
+  endif
   let res = s:runCommand(bcommand)
   " We're caching is strictly so we can use CTRL-o and CTRL-i
   " escape any character that could cause a problem in saving the filename
